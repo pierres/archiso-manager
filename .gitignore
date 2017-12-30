@@ -1,1 +1,8 @@
 /.idea
+/codesign.crt
+/codesign.key
+/archlinux-*.iso*
+/archlinux-bootstrap-*.tar.gz*
+/arch
+/md5sums.txt
+/sha1sums.txt
