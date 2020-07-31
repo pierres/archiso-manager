@@ -18,7 +18,7 @@ build-netboot:
 		--exclude 'memtest*' --exclude 'pkglist.*' \
 		-f archlinux-$(VERSION)-x86_64.iso \
 		arch/
-	for f in arch/boot/intel_ucode.img arch/boot/x86_64/vmlinuz  arch/boot/x86_64/archiso.img; do \
+	for f in arch/boot/amd-ucode.img arch/boot/intel-ucode.img arch/boot/x86_64/vmlinuz-linux arch/boot/x86_64/archiso.img; do \
 		$(VENDOR)/arch_netboot_tools/codesigning/sign_file.sh $$f \
 			$(CURDIR)/codesign.crt \
 			$(CURDIR)/codesign.key; \
@@ -47,7 +47,7 @@ upload-release:
 	cd vendor/archlinux-docker && $(MAKE) docker-push
 
 show-info:
-	@file arch/boot/x86_64/vmlinuz | grep -P -o 'version [^-]*'
+	@file arch/boot/x86_64/vmlinuz-linux | grep -P -o 'version [^-]*'
 	@grep archlinux-$(VERSION)-x86_64.iso sha1sums.txt
 	@grep archlinux-$(VERSION)-x86_64.iso md5sums.txt
 
