@@ -9,7 +9,7 @@ clean:
 
 build-iso:
 	$(eval TMPDIR := $(shell mktemp -d))
-	(cd $(TMPDIR) && sudo GNUPGHOME=$(HOME)/.gnupg /usr/share/archiso/configs/releng/build.sh -g $(GPGKEY))
+	(cd $(TMPDIR) && sudo GNUPGHOME=$(HOME)/.gnupg mkarchiso -g $(GPGKEY) /usr/share/archiso/configs/releng/)
 	cp $(TMPDIR)/out/archlinux-$(VERSION)-x86_64.iso .
 	sudo rm -rf $(TMPDIR)
 
