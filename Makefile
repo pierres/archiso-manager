@@ -18,7 +18,8 @@ build-netboot:
 		--exclude 'memtest*' --exclude 'pkglist.*' \
 		-f archlinux-$(VERSION)-x86_64.iso \
 		arch/
-	chmod +w arch/boot/{,x86_64}
+	find arch -type d -exec chmod 0755 {} \;
+	find arch -type f -exec chmod 0644 {} \;
 	for f in arch/boot/amd-ucode.img arch/boot/intel-ucode.img arch/boot/x86_64/vmlinuz-* arch/boot/x86_64/initramfs-*.img; do \
 		$(VENDOR)/arch_netboot_tools/codesigning/sign_file.sh $$f \
 			$(CURDIR)/codesign.crt \
