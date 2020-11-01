@@ -9,7 +9,11 @@ clean:
 
 build-iso:
 	$(eval TMPDIR := $(shell mktemp -d))
-	(cd $(TMPDIR) && sudo GNUPGHOME=$(HOME)/.gnupg mkarchiso -g $(GPGKEY) /usr/share/archiso/configs/releng/)
+	@echo "Set an empty password on the temporary copy of the GPG key"
+	gpg --use-agent --export-secret-keys $(GPGKEY) > $(TMPDIR)/gpgkey
+	GNUPGHOME=$(TMPDIR)/.gnupg gpg --import $(TMPDIR)/gpgkey
+	GNUPGHOME=$(TMPDIR)/.gnupg gpg --change-passphrase $(GPGKEY)
+	(cd $(TMPDIR) && sudo GNUPGHOME=$(TMPDIR)/.gnupg mkarchiso -g $(GPGKEY) /usr/share/archiso/configs/releng/)
 	cp $(TMPDIR)/out/archlinux-$(VERSION)-x86_64.iso .
 	sudo rm -rf $(TMPDIR)
 
