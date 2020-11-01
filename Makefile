@@ -1,6 +1,6 @@
 VENDOR := $(CURDIR)/vendor
 VERSION := $(shell date +%Y.%m.%d)
-GPGKEY := 9741E8AC
+GPGKEY := 4AA4767BBC9C4B1D18AE28B77F2D434B9741E8AC
 
 all: build-iso build-netboot build-bootstrap create-signatures create-torrent show-info
 
@@ -52,6 +52,7 @@ show-info:
 	@file arch/boot/x86_64/vmlinuz-* | grep -P -o 'version [^-]*'
 	@grep archlinux-$(VERSION)-x86_64.iso sha1sums.txt
 	@grep archlinux-$(VERSION)-x86_64.iso md5sums.txt
+	@echo GPG Fingerprint: ${GPGKEY}
 
 copy-torrent:
 	base64 archlinux-$(VERSION)-x86_64.iso.torrent | xclip
