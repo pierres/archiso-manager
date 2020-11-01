@@ -7,6 +7,3 @@
 [submodule "vendor/genbootstrap"]
 	path = vendor/genbootstrap
 	url = https://github.com/pierres/genbootstrap.git
-[submodule "vendor/archlinux-docker"]
-	path = vendor/archlinux-docker
-	url = git@github.com:archlinux/archlinux-docker.git

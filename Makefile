@@ -2,7 +2,7 @@ VENDOR := $(CURDIR)/vendor
 VERSION := $(shell date +%Y.%m.%d)
 GPGKEY := 9741E8AC
 
-all: build-iso build-netboot build-bootstrap create-signatures create-torrent build-docker show-info
+all: build-iso build-netboot build-bootstrap create-signatures create-torrent show-info
 
 clean:
 	git clean -xdf -e .idea -e codesign.crt -e codesign.key
@@ -33,9 +33,6 @@ build-netboot:
 build-bootstrap:
 	sudo $(VENDOR)/genbootstrap/genbootstrap
 
-build-docker:
-	cd vendor/archlinux-docker && sudo $(MAKE) docker-image-test
-
 create-signatures:
 	for f in archlinux-$(VERSION)-x86_64.iso archlinux-bootstrap-$(VERSION)-x86_64.tar.gz; do \
 		gpg --use-agent --detach-sign $$f; \
@@ -50,7 +47,6 @@ upload-release:
 	rsync -cah --progress \
 		archlinux-$(VERSION)-x86_64.iso* md5sums.txt sha1sums.txt arch archlinux-bootstrap-$(VERSION)-x86_64.tar.gz* \
 		-e ssh repos.archlinux.org:tmp/
-	cd vendor/archlinux-docker && $(MAKE) docker-push
 
 show-info:
 	@file arch/boot/x86_64/vmlinuz-* | grep -P -o 'version [^-]*'
@@ -60,4 +56,4 @@ show-info:
 copy-torrent:
 	base64 archlinux-$(VERSION)-x86_64.iso.torrent | xclip
 
-.PHONY: all clean build-iso build-netboot build-bootstrap build-docker create-signatures create-torrent upload-release show-info copy-torrent
+.PHONY: all clean build-iso build-netboot build-bootstrap create-signatures create-torrent upload-release show-info copy-torrent
