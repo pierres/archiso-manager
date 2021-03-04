@@ -2,7 +2,7 @@ VENDOR := $(CURDIR)/vendor
 VERSION := $(shell date +%Y.%m.%d)
 GPGKEY := 4AA4767BBC9C4B1D18AE28B77F2D434B9741E8AC
 
-all: build-iso build-netboot build-bootstrap create-signatures create-torrent show-info
+all: build-iso build-netboot build-bootstrap create-signatures create-torrent create-zsync-control show-info
 
 clean:
 	git clean -xdf -e .idea -e codesign.crt -e codesign.key
@@ -43,6 +43,9 @@ create-signatures:
 create-torrent:
 	$(VENDOR)/archlinux-torrent-utils/mktorrent-archlinux $(VERSION) archlinux-$(VERSION)-x86_64.iso
 
+create-zsync-control:
+	zsyncmake -C -u archlinux-$(VERSION)-x86_64.iso archlinux-$(VERSION)-x86_64.iso
+
 upload-release:
 	rsync -cah --progress \
 		archlinux-$(VERSION)-x86_64.iso* md5sums.txt sha1sums.txt arch archlinux-bootstrap-$(VERSION)-x86_64.tar.gz* \
@@ -60,4 +63,4 @@ copy-torrent:
 run-iso:
 	qemu-system-x86_64 -boot d -m 4G -enable-kvm -device intel-hda -device hda-duplex -smp cores=2,threads=2 -cdrom archlinux-$(VERSION)-x86_64.iso
 
-.PHONY: all clean build-iso build-netboot build-bootstrap create-signatures create-torrent upload-release show-info copy-torrent run-iso
+.PHONY: all clean build-iso build-netboot build-bootstrap create-signatures create-torrent create-zsync-control upload-release show-info copy-torrent run-iso
