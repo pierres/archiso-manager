@@ -60,4 +60,7 @@ copy-torrent:
 run-iso:
 	qemu-system-x86_64 -boot d -m 4G -enable-kvm -device intel-hda -device hda-duplex -smp cores=2,threads=2 -cdrom archlinux-$(VERSION)-x86_64.iso
 
-.PHONY: all clean build-iso build-netboot build-bootstrap create-signatures create-torrent upload-release show-info copy-torrent run-iso
+check-mirrors:
+	@GODEBUG=netdns=go go run checkMirrors/main.go
+
+.PHONY: all clean build-iso build-netboot build-bootstrap create-signatures create-torrent upload-release show-info copy-torrent run-iso check-mirrors
