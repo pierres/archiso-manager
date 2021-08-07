@@ -1,6 +1,7 @@
 VENDOR := $(CURDIR)/vendor
 VERSION := $(shell date +%Y.%m.%d)
 GPGKEY := 4AA4767BBC9C4B1D18AE28B77F2D434B9741E8AC
+GPGSENDER:= 'Pierre Schmitz <pierre@archlinux.de>'
 
 all: build-all create-signatures create-torrent show-info
 
@@ -16,6 +17,7 @@ build-all:
 	(sudo GNUPGHOME=$(TMPDIR)/.gnupg mkarchiso \
 		-c "$(CURDIR)/codesign.crt $(CURDIR)/codesign.key" \
 		-g $(GPGKEY) \
+		-G $(GPGSENDER) \
 		-m 'iso netboot bootstrap' \
 		-w $(TMPDIR) \
 		-o $(CURDIR) \
@@ -26,7 +28,7 @@ build-all:
 
 create-signatures:
 	for f in archlinux-$(VERSION)-x86_64.iso archlinux-bootstrap-$(VERSION)-x86_64.tar.gz; do \
-		gpg --use-agent --detach-sign $$f; \
+		gpg --use-agent --sender $(GPGSENDER) --detach-sign $$f; \
 	done
 	sha1sum archlinux-$(VERSION)-x86_64.iso archlinux-bootstrap-$(VERSION)-x86_64.tar.gz > sha1sums.txt
 	md5sum archlinux-$(VERSION)-x86_64.iso archlinux-bootstrap-$(VERSION)-x86_64.tar.gz > md5sums.txt
@@ -44,6 +46,7 @@ show-info:
 	@grep archlinux-$(VERSION)-x86_64.iso sha1sums.txt
 	@grep archlinux-$(VERSION)-x86_64.iso md5sums.txt
 	@echo GPG Fingerprint: ${GPGKEY}
+	@echo GPG Signer: ${GPGSENDER}
 
 copy-torrent:
 	base64 archlinux-$(VERSION)-x86_64.iso.torrent | xclip
