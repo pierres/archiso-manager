@@ -2,36 +2,27 @@ VENDOR := $(CURDIR)/vendor
 VERSION := $(shell date +%Y.%m.%d)
 GPGKEY := 4AA4767BBC9C4B1D18AE28B77F2D434B9741E8AC
 
-all: build-iso build-netboot build-bootstrap create-signatures create-torrent show-info
+all: build-all create-signatures create-torrent show-info
 
 clean:
 	git clean -xdf -e .idea -e codesign.crt -e codesign.key
 
-build-iso:
+build-all:
 	$(eval TMPDIR := $(shell mktemp -d))
 	@echo "Set an empty password on the temporary copy of the GPG key"
 	gpg --use-agent --export-secret-keys $(GPGKEY) > $(TMPDIR)/gpgkey
 	GNUPGHOME=$(TMPDIR)/.gnupg gpg --import $(TMPDIR)/gpgkey
 	GNUPGHOME=$(TMPDIR)/.gnupg gpg --change-passphrase $(GPGKEY)
-	(cd $(TMPDIR) && sudo GNUPGHOME=$(TMPDIR)/.gnupg mkarchiso -g $(GPGKEY) /usr/share/archiso/configs/releng/)
-	cp $(TMPDIR)/out/archlinux-$(VERSION)-x86_64.iso .
+	(sudo GNUPGHOME=$(TMPDIR)/.gnupg mkarchiso \
+		-c "$(CURDIR)/codesign.crt $(CURDIR)/codesign.key" \
+		-g $(GPGKEY) \
+		-m 'iso netboot bootstrap' \
+		-w $(TMPDIR) \
+		-o $(CURDIR) \
+		/usr/share/archiso/configs/releng/ \
+	)
 	sudo rm -rf $(TMPDIR)
-
-build-netboot:
-	bsdtar -x --exclude=arch/boot/syslinux \
-		--exclude 'memtest*' --exclude 'pkglist.*' \
-		-f archlinux-$(VERSION)-x86_64.iso \
-		arch/
-	find arch -type d -exec chmod 0755 {} \;
-	find arch -type f -exec chmod 0644 {} \;
-	for f in arch/boot/amd-ucode.img arch/boot/intel-ucode.img arch/boot/x86_64/vmlinuz-* arch/boot/x86_64/initramfs-*.img; do \
-		$(VENDOR)/arch_netboot_tools/codesigning/sign_file.sh $$f \
-			$(CURDIR)/codesign.crt \
-			$(CURDIR)/codesign.key; \
-	done
-
-build-bootstrap:
-	sudo $(VENDOR)/genbootstrap/genbootstrap
+	sudo rm -f arch/boot/memtest && sudo rm -rf arch/boot/licenses/memtest86+
 
 create-signatures:
 	for f in archlinux-$(VERSION)-x86_64.iso archlinux-bootstrap-$(VERSION)-x86_64.tar.gz; do \
