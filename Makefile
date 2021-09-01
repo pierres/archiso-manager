@@ -3,12 +3,12 @@ VERSION := $(shell date +%Y.%m.%d)
 GPGKEY := 4AA4767BBC9C4B1D18AE28B77F2D434B9741E8AC
 GPGSENDER:= 'Pierre Schmitz <pierre@archlinux.de>'
 
-all: build-all create-signatures create-torrent show-info
+all: build create-signatures create-torrent show-info
 
 clean:
 	git clean -xdf -e .idea -e codesign.crt -e codesign.key
 
-build-all:
+build:
 	$(eval TMPDIR := $(shell mktemp -d))
 	@echo "Set an empty password on the temporary copy of the GPG key"
 	gpg --use-agent --export-secret-keys $(GPGKEY) > $(TMPDIR)/gpgkey
@@ -59,4 +59,4 @@ run-iso:
 check-mirrors:
 	@GODEBUG=netdns=go go run checkMirrors/main.go
 
-.PHONY: all clean build-iso build-netboot build-bootstrap create-signatures create-torrent upload-release show-info copy-torrent run-iso check-mirrors
+.PHONY: all clean build create-signatures create-torrent upload-release show-info copy-torrent run-iso check-mirrors
