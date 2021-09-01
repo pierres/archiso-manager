@@ -16,6 +16,8 @@ type releases struct {
 type mirrorStatus struct {
 	Protocol string `json:"protocol"`
 	Url      string `json:"url"`
+	Active   bool   `json:"active"`
+	Isos     bool   `json:"isos"`
 }
 
 type mirrorStatusList struct {
@@ -29,7 +31,7 @@ func main() {
 
 	var isoUrls []string
 	for _, s := range mirrorUrlList.Urls {
-		if s.Protocol == "https" || s.Protocol == "http" {
+		if (s.Protocol == "https" || s.Protocol == "http") && s.Active && s.Isos {
 			isoUrls = append(isoUrls, fmt.Sprintf("%siso/%s/archlinux-%s-x86_64.iso", s.Url, isoVersion, isoVersion))
 		}
 	}
