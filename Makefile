@@ -25,6 +25,8 @@ build-all:
 	)
 	sudo rm -rf $(TMPDIR)
 	sudo rm -f arch/boot/memtest && sudo rm -rf arch/boot/licenses/memtest86+
+	@echo "Set owner of generated files"
+	sudo chown -R $$(id -u):$$(id -g) arch archlinux-*
 
 create-signatures:
 	for f in archlinux-$(VERSION)-x86_64.iso archlinux-bootstrap-$(VERSION)-x86_64.tar.gz; do \
