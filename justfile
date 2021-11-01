@@ -37,7 +37,7 @@ create-torrent:
 	set -euo pipefail
 
 	echo 'Creating webseeds...'
-	httpmirrorlist=$(curl "https://archlinux.org/mirrorlist/?country=all&protocol=http&protocol=https" \
+	httpmirrorlist=$(curl "https://archlinux.org/mirrorlist/?county^ry=all&protocol=https" \
 		| grep '#Server = http' \
 		| awk "{print \$3\"/iso/${VERSION}/\";}" \
 		| sed -e 's#/$repo/os/$arch##' \
