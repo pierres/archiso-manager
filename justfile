@@ -13,8 +13,50 @@ build:
 	set -euo pipefail
 
 	TMPDIR=$(mktemp -d)
-	sudo mkarchiso \
+
+	# create an ephemeral PGP key for signing the rootfs image
+	gnupg_homedir="${TMPDIR}/.gnupg"
+	mkdir -p "${gnupg_homedir}"
+	chmod 700 "${gnupg_homedir}"
+
+	cat << __EOF__ > "${gnupg_homedir}"/gpg.conf
+		quiet
+		batch
+		no-tty
+		no-permission-warning
+		export-options no-export-attributes,export-clean
+		list-options no-show-keyring
+		armor
+		no-emit-version
+	__EOF__
+
+	gpg --homedir "${gnupg_homedir}" --gen-key <<EOF
+		%echo Generating ephemeral Arch Linux release engineering key pair...
+		Key-Type: default
+		Key-Length: 3072
+		Key-Usage: sign
+		Name-Real: Arch Linux Release Engineering
+		Name-Comment: Ephemeral Signing Key
+		Name-Email: arch-releng@lists.archlinux.org
+		Expire-Date: 0
+		%no-protection
+		%commit
+		%echo Done
+	EOF
+
+	pgp_key_id="$(
+		gpg --homedir "${gnupg_homedir}" \
+			--list-secret-keys \
+			--with-colons \
+			| awk -F':' '{if($1 ~ /sec/){ print $5 }}'
+	)"
+
+	pgp_sender="Arch Linux Release Engineering (Ephemeral Signing Key) <arch-releng@lists.archlinux.org>"
+
+	sudo GNUPGHOME="${gnupg_homedir}" mkarchiso \
 		-c "${CURDIR}/codesign.crt ${CURDIR}/codesign.key" \
+		-g "${pgp_key_id}" \
+		-G "${pgp_sender}" \
 		-m 'iso netboot bootstrap' \
 		-w "${TMPDIR}" \
 		-o "${CURDIR}" \
@@ -26,7 +68,7 @@ build:
 	sudo chown -R $(id -u):$(id -g) arch archlinux-*
 
 create-signatures:
-	for f in "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" "arch/x86_64/airootfs.sfs"; do \
+	for f in "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz"; do \
 		gpg --use-agent --sender "${GPGSENDER}" --local-user "${GPGKEY}" --detach-sign "$f"; \
 	done
 	sha1sum "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" > sha1sums.txt
