@@ -1,5 +1,4 @@
 export CURDIR := justfile_directory()
-export VENDOR := justfile_directory() + 'vendor'
 export VERSION := `date +%Y.%m.%d`
 export GPGKEY := '4AA4767BBC9C4B1D18AE28B77F2D434B9741E8AC'
 export GPGSENDER:= 'Pierre Schmitz <pierre@archlinux.de>'
@@ -11,7 +10,8 @@ clean:
 
 build:
 	#!/usr/bin/env bash
-	set -euxo pipefail
+	set -euo pipefail
+
 	TMPDIR=$(mktemp -d)
 	sudo mkarchiso \
 		-c "${CURDIR}/codesign.crt ${CURDIR}/codesign.key" \
@@ -33,7 +33,22 @@ create-signatures:
 	md5sum "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" > md5sums.txt
 
 create-torrent:
-	$(VENDOR)/archlinux-torrent-utils/mktorrent-archlinux "${VERSION}" "archlinux-${VERSION}-x86_64.iso"
+	#!/usr/bin/env bash
+	set -euo pipefail
+
+	echo 'Creating webseeds...'
+	httpmirrorlist=$(curl "https://archlinux.org/mirrorlist/?country=all&protocol=http&protocol=https" \
+		| grep '#Server = http' \
+		| awk "{print \$3\"/iso/${VERSION}/\";}" \
+		| sed -e 's#/$repo/os/$arch##' \
+			-e 's#\s*# -w #')
+
+	echo 'Building torrent...'
+	mktorrent \
+		-l 19 \
+		-c "Arch Linux ${VERSION} (www.archlinux.org)" \
+		${httpmirrorlist} \
+		"archlinux-${VERSION}-x86_64.iso"
 
 upload-release:
 	rsync -cah --progress \

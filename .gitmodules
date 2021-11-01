@@ -1,9 +1,0 @@
-[submodule "vendor/arch_netboot_tools"]
-	path = vendor/arch_netboot_tools
-	url = https://han.bchlr.de/git/public/arch_netboot_tools
-[submodule "vendor/archlinux-torrent-utils"]
-	path = vendor/archlinux-torrent-utils
-	url = https://github.com/pierres/archlinux-torrent-utils.git
-[submodule "vendor/genbootstrap"]
-	path = vendor/genbootstrap
-	url = https://github.com/pierres/genbootstrap.git
