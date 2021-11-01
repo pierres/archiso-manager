@@ -26,7 +26,7 @@ build:
 	sudo chown -R $(id -u):$(id -g) arch archlinux-*
 
 create-signatures:
-	for f in "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz"; do \
+	for f in "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" "arch/x86_64/airootfs.sfs"; do \
 		gpg --use-agent --sender "${GPGSENDER}" --local-user "${GPGKEY}" --detach-sign "$f"; \
 	done
 	sha1sum "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" > sha1sums.txt
