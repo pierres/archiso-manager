@@ -62,7 +62,7 @@ copy-torrent:
 	base64 "archlinux-${VERSION}-x86_64.iso.torrent" | xclip
 
 run-iso:
-	qemu-system-x86_64 -boot d -m 4G -enable-kvm -device intel-hda -device hda-duplex -smp cores=2,threads=2 -cdrom "archlinux-${VERSION}-x86_64.iso"
+	qemu-system-x86_64 -boot d -m 4G -enable-kvm -device intel-hda -device hda-duplex -smp cores=2 -cdrom "archlinux-${VERSION}-x86_64.iso"
 
 check-mirrors:
 	@GODEBUG=netdns=go go run checkMirrors/main.go
