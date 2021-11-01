@@ -22,12 +22,12 @@ build:
 
 	sudo rm -rf "${TMPDIR}"
 	sudo rm -f arch/boot/memtest && sudo rm -rf arch/boot/licenses/memtest86+
-	@echo "Set owner of generated files"
+	# Set owner of generated files
 	sudo chown -R $(id -u):$(id -g) arch archlinux-*
 
 create-signatures:
 	for f in "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz"; do \
-		gpg --use-agent --sender $(GPGSENDER) --local-user $(GPGKEY) --detach-sign "$f"; \
+		gpg --use-agent --sender "${GPGSENDER}" --local-user "${GPGKEY}" --detach-sign "$f"; \
 	done
 	sha1sum "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" > sha1sums.txt
 	md5sum "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" > md5sums.txt
@@ -59,8 +59,8 @@ show-info:
 	@file arch/boot/x86_64/vmlinuz-* | grep -P -o 'version [^-]*'
 	@grep "archlinux-${VERSION}-x86_64.iso" sha1sums.txt
 	@grep "archlinux-${VERSION}-x86_64.iso" md5sums.txt
-	@echo GPG Fingerprint: ${GPGKEY}
-	@echo GPG Signer: ${GPGSENDER}
+	@echo GPG Fingerprint: "${GPGKEY}"
+	@echo GPG Signer: "${GPGSENDER}"
 
 copy-torrent:
 	base64 "archlinux-${VERSION}-x86_64.iso.torrent" | xclip
