@@ -71,6 +71,8 @@ create-signatures:
 	for f in "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz"; do \
 		gpg --use-agent --sender "${GPGSENDER}" --local-user "${GPGKEY}" --detach-sign "$f"; \
 	done
+	sha256sum "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" > sha256sums.txt
+	b2sum "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" > b2sums.txt
 	sha1sum "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" > sha1sums.txt
 	md5sum "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" > md5sums.txt
 
@@ -90,7 +92,7 @@ create-torrent:
 
 upload-release:
 	rsync -cah --progress \
-		"archlinux-${VERSION}-x86_64.iso"* md5sums.txt sha1sums.txt arch "archlinux-bootstrap-${VERSION}-x86_64.tar.gz"* \
+		"archlinux-${VERSION}-x86_64.iso"* md5sums.txt sha1sums.txt sha256sums.txt b2sums.txt arch "archlinux-bootstrap-${VERSION}-x86_64.tar.gz"* \
 		-e ssh repos.archlinux.org:tmp/
 
 show-info:
