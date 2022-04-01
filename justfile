@@ -97,6 +97,8 @@ upload-release:
 
 show-info:
 	@file arch/boot/x86_64/vmlinuz-* | grep -P -o 'version [^-]*'
+	@grep "archlinux-${VERSION}-x86_64.iso" sha256sums.txt
+	@grep "archlinux-${VERSION}-x86_64.iso" b2sums.txt
 	@grep "archlinux-${VERSION}-x86_64.iso" sha1sums.txt
 	@grep "archlinux-${VERSION}-x86_64.iso" md5sums.txt
 	@echo GPG Fingerprint: "${GPGKEY}"
