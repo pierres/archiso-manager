@@ -3,11 +3,17 @@ export VERSION := `date +%Y.%m.%d`
 export GPGKEY := '4AA4767BBC9C4B1D18AE28B77F2D434B9741E8AC'
 export GPGSENDER:= 'Pierre Schmitz <pierre@archlinux.de>'
 
-default: build create-signatures create-torrent show-info
+_default:
+	@just --list
 
+# build all artifacts
+all: build create-signatures create-torrent show-info
+
+# remove all build artifacts
 clean:
 	git clean -xdf -e .idea -e codesign.crt -e codesign.key
 
+# build ISO image
 build:
 	#!/usr/bin/env bash
 	set -euo pipefail
@@ -67,6 +73,7 @@ build:
 	# Set owner of generated files
 	sudo chown -R $(id -u):$(id -g) arch archlinux-*
 
+# create GPG signatures and checksums
 create-signatures:
 	for f in "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz"; do \
 		gpg --use-agent --sender "${GPGSENDER}" --local-user "${GPGKEY}" --detach-sign "$f"; \
@@ -76,6 +83,7 @@ create-signatures:
 	sha1sum "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" > sha1sums.txt
 	md5sum "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" > md5sums.txt
 
+# create Torrent file
 create-torrent:
 	#!/usr/bin/env bash
 	set -euo pipefail
@@ -90,11 +98,13 @@ create-torrent:
 		${httpmirrorlist} \
 		"archlinux-${VERSION}-x86_64.iso"
 
+# upload artifacts
 upload-release:
 	rsync -cah --progress \
 		"archlinux-${VERSION}-x86_64.iso"* md5sums.txt sha1sums.txt sha256sums.txt b2sums.txt arch "archlinux-bootstrap-${VERSION}-x86_64.tar.gz"* \
 		-e ssh repos.archlinux.org:tmp/
 
+# show release information
 show-info:
 	@file arch/boot/x86_64/vmlinuz-* | grep -P -o 'version [^-]*'
 	@grep "archlinux-${VERSION}-x86_64.iso" sha256sums.txt
@@ -104,12 +114,15 @@ show-info:
 	@echo GPG Fingerprint: "${GPGKEY}"
 	@echo GPG Signer: "${GPGSENDER}"
 
+# copy Torrent file to clipboard
 copy-torrent:
 	base64 "archlinux-${VERSION}-x86_64.iso.torrent" | xclip
 
+# test the ISO image
 run-iso:
 	qemu-system-x86_64 -boot d -m 4G -enable-kvm -device intel-hda -device hda-duplex -smp cores=2 -cdrom "archlinux-${VERSION}-x86_64.iso"
 
+# check mirror status for latest release
 check-mirrors:
 	@GODEBUG=netdns=go go run checkMirrors/main.go
 
