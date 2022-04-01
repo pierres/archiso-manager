@@ -78,10 +78,9 @@ create-signatures:
 	for f in "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz"; do \
 		gpg --use-agent --sender "${GPGSENDER}" --local-user "${GPGKEY}" --detach-sign "$f"; \
 	done
-	sha256sum "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" > sha256sums.txt
-	b2sum "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" > b2sums.txt
-	sha1sum "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" > sha1sums.txt
-	md5sum "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" > md5sums.txt
+	for sum in sha256sum b2sum sha1sum md5sum; do \
+		$sum  "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" > ${sum}s.txt; \
+	done
 
 # create Torrent file
 create-torrent:
@@ -107,10 +106,10 @@ upload-release:
 # show release information
 show-info:
 	@file arch/boot/x86_64/vmlinuz-* | grep -P -o 'version [^-]*'
-	@grep "archlinux-${VERSION}-x86_64.iso" sha256sums.txt
-	@grep "archlinux-${VERSION}-x86_64.iso" b2sums.txt
-	@grep "archlinux-${VERSION}-x86_64.iso" sha1sums.txt
-	@grep "archlinux-${VERSION}-x86_64.iso" md5sums.txt
+	@for sum in *sums.txt; do \
+		echo -n "${sum%%sums.txt} "; \
+		sed -zE "s/^([a-f0-9]+)\s+archlinux-${VERSION}-x86_64\.iso.*/\1\n/g" $sum; \
+	done
 	@echo GPG Fingerprint: "${GPGKEY}"
 	@echo GPG Signer: "${GPGSENDER}"
 
