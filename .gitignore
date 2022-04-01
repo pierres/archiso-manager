@@ -4,6 +4,8 @@
 /archlinux-*.iso*
 /archlinux-bootstrap-*.tar.gz*
 /arch
-/md5sums.txt
+/sha256sums.txt
+/b2sums.txt
 /sha1sums.txt
+/md5sums.txt
 /checkMirrors/checkMirrors
