@@ -78,7 +78,7 @@ create-signatures:
 	for f in "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz"; do \
 		gpg --use-agent --sender "${GPGSENDER}" --local-user "${GPGKEY}" --detach-sign "$f"; \
 	done
-	for sum in sha256sum b2sum sha1sum md5sum; do \
+	for sum in sha256sum b2sum; do \
 		$sum  "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" > ${sum}s.txt; \
 	done
 
@@ -90,7 +90,7 @@ latest-symlink:
 	ln -sf "archlinux-bootstrap-${VERSION}-x86_64.tar.gz.sig" "archlinux-bootstrap-x86_64.tar.gz.sig"
 
 	# add checksums for symlinks
-	for sum in sha256sum b2sum sha1sum md5sum; do \
+	for sum in sha256sum b2sum; do \
 		sed "p;s/-${VERSION}//" -i ${sum}s.txt; \
 	done
 
@@ -115,7 +115,7 @@ upload-release:
 		"archlinux-${VERSION}-x86_64.iso"* "archlinux-x86_64.iso"* \
 		"archlinux-bootstrap-${VERSION}-x86_64.tar.gz"* "archlinux-bootstrap-x86_64.tar.gz"*  \
 		arch \
-		md5sums.txt sha1sums.txt sha256sums.txt b2sums.txt \
+		sha256sums.txt b2sums.txt \
 		-e ssh repos.archlinux.org:tmp/
 
 # show release information
