@@ -7,7 +7,7 @@ _default:
 	@just --list
 
 # build all artifacts
-all: build create-signatures create-torrent show-info
+all: build create-signatures create-torrent latest-symlink show-info
 
 # remove all build artifacts
 clean:
@@ -82,6 +82,10 @@ create-signatures:
 		$sum  "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" > ${sum}s.txt; \
 	done
 
+# create a latest symlink
+latest-symlink:
+	ln -sf "archlinux-${VERSION}-x86_64.iso" "archlinux-x86_64.iso"
+
 # create Torrent file
 create-torrent:
 	#!/usr/bin/env bash
@@ -101,6 +105,7 @@ create-torrent:
 upload-release:
 	rsync -cah --progress \
 		"archlinux-${VERSION}-x86_64.iso"* md5sums.txt sha1sums.txt sha256sums.txt b2sums.txt arch "archlinux-bootstrap-${VERSION}-x86_64.tar.gz"* \
+		"archlinux-x86_64.iso" \
 		-e ssh repos.archlinux.org:tmp/
 
 # show release information
