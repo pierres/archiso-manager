@@ -31,7 +31,7 @@ func main() {
 
 	var isoUrls []string
 	for _, s := range mirrorUrlList.Urls {
-		if (s.Protocol == "https" || s.Protocol == "http") && s.Active && s.Isos {
+		if s.Protocol == "https" && s.Active && s.Isos {
 			isoUrls = append(isoUrls, fmt.Sprintf("%siso/%s/archlinux-%s-x86_64.iso", s.Url, isoVersion, isoVersion))
 		}
 	}
@@ -60,7 +60,7 @@ func main() {
 
 func CheckUrl(url string, status chan bool) {
 	c := &http.Client{
-		Timeout: 20 * time.Second,
+		Timeout: time.Duration(20) * time.Second,
 	}
 	response, err := c.Head(url)
 	if err != nil {
