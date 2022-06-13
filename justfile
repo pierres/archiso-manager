@@ -86,6 +86,8 @@ create-signatures:
 latest-symlink:
 	ln -sf "archlinux-${VERSION}-x86_64.iso" "archlinux-x86_64.iso"
 	ln -sf "archlinux-${VERSION}-x86_64.iso.sig" "archlinux-x86_64.iso.sig"
+	ln -sf "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" "archlinux-bootstrap-x86_64.tar.gz"
+	ln -sf "archlinux-bootstrap-${VERSION}-x86_64.tar.gz.sig" "archlinux-bootstrap-x86_64.tar.gz.sig"
 
 # create Torrent file
 create-torrent:
@@ -105,8 +107,10 @@ create-torrent:
 # upload artifacts
 upload-release:
 	rsync -cah --progress \
-		"archlinux-${VERSION}-x86_64.iso"* md5sums.txt sha1sums.txt sha256sums.txt b2sums.txt arch "archlinux-bootstrap-${VERSION}-x86_64.tar.gz"* \
-		"archlinux-x86_64.iso" "archlinux-x86_64.iso.sig" \
+		"archlinux-${VERSION}-x86_64.iso"* "archlinux-x86_64.iso"* \
+		"archlinux-bootstrap-${VERSION}-x86_64.tar.gz"* "archlinux-bootstrap-x86_64.tar.gz"*  \
+		arch \
+		md5sums.txt sha1sums.txt sha256sums.txt b2sums.txt \
 		-e ssh repos.archlinux.org:tmp/
 
 # show release information
