@@ -89,6 +89,11 @@ latest-symlink:
 	ln -sf "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" "archlinux-bootstrap-x86_64.tar.gz"
 	ln -sf "archlinux-bootstrap-${VERSION}-x86_64.tar.gz.sig" "archlinux-bootstrap-x86_64.tar.gz.sig"
 
+	# add checksums for symlinks
+	for sum in sha256sum b2sum sha1sum md5sum; do \
+		sed "p;s/-${VERSION}//" -i ${sum}s.txt; \
+	done
+
 # create Torrent file
 create-torrent:
 	#!/usr/bin/env bash
