@@ -98,7 +98,7 @@ create-torrent:
 	echo 'Building torrent...'
 	mktorrent \
 		-l 19 \
-		-c "Arch Linux ${VERSION} (www.archlinux.org)" \
+		-c "Arch Linux ${VERSION} <https://archlinux.org>" \
 		${httpmirrorlist} \
 		"archlinux-${VERSION}-x86_64.iso"
 
