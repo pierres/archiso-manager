@@ -134,7 +134,7 @@ copy-torrent:
 
 # test the ISO image
 run-iso:
-	qemu-system-x86_64 -boot d -m 4G -enable-kvm -device intel-hda -device hda-duplex -smp cores=2 -cdrom "archlinux-${VERSION}-x86_64.iso"
+	run_archiso -i "archlinux-${VERSION}-x86_64.iso"
 
 # check mirror status for latest release
 check-mirrors:
