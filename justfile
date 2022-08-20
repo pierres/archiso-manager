@@ -107,6 +107,7 @@ create-torrent:
 		-l 19 \
 		-c "Arch Linux ${VERSION} <https://archlinux.org>" \
 		${httpmirrorlist} \
+		-w "https://archive.archlinux.org/iso/${VERSION}/" \
 		"archlinux-${VERSION}-x86_64.iso"
 
 # upload artifacts
