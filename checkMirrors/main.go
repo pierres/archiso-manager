@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"time"
@@ -26,7 +26,7 @@ type mirrorStatusList struct {
 
 func main() {
 	// disable debug logging (e.g. used by the http client)
-	log.SetOutput(ioutil.Discard)
+	log.SetOutput(io.Discard)
 
 	isoVersion := fetchLatestVersion()
 	fmt.Printf("Latest version is %s\n", isoVersion)
@@ -91,7 +91,7 @@ func fetchLatestVersion() string {
 		log.Fatal(err)
 	}
 	defer response.Body.Close()
-	releasesJson, err := ioutil.ReadAll(response.Body)
+	releasesJson, err := io.ReadAll(response.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -110,7 +110,7 @@ func fetchMirrorUrls() mirrorStatusList {
 		log.Fatal(err)
 	}
 	defer response.Body.Close()
-	mirrorStatusJson, err := ioutil.ReadAll(response.Body)
+	mirrorStatusJson, err := io.ReadAll(response.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
