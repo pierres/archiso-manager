@@ -25,6 +25,9 @@ type mirrorStatusList struct {
 }
 
 func main() {
+	// disable debug logging (e.g. used by the http client)
+	log.SetOutput(ioutil.Discard)
+
 	isoVersion := fetchLatestVersion()
 	fmt.Printf("Latest version is %s\n", isoVersion)
 	mirrorUrlList := fetchMirrorUrls()
