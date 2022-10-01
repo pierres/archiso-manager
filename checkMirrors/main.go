@@ -48,15 +48,12 @@ func main() {
 	failStatus := 0
 	numberOfUrls := len(isoUrls)
 	for i := 0; i < numberOfUrls; i++ {
-		select {
-		case s := <-status:
-			if s {
-				okStatus++
-			} else {
-				failStatus++
-			}
-			fmt.Printf("\rTesting %d of %d servers - OK: %d, Failure: %d", okStatus+failStatus, numberOfUrls, okStatus, failStatus)
+		if <-status {
+			okStatus++
+		} else {
+			failStatus++
 		}
+		fmt.Printf("\rTesting %d of %d servers - OK: %d, Failure: %d", okStatus+failStatus, numberOfUrls, okStatus, failStatus)
 	}
 	fmt.Println("")
 }
