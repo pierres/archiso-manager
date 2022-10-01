@@ -59,8 +59,13 @@ func main() {
 }
 
 func CheckUrl(url string, status chan bool) {
+	t := http.DefaultTransport.(*http.Transport).Clone()
+	t.DisableKeepAlives = true
+	t.MaxConnsPerHost = 1
+
 	c := &http.Client{
-		Timeout: time.Duration(20) * time.Second,
+		Timeout:   time.Duration(20) * time.Second,
+		Transport: t,
 	}
 	response, err := c.Head(url)
 	if err != nil {
