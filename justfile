@@ -1,7 +1,7 @@
 export CURDIR := justfile_directory()
 export VERSION := `date +%Y.%m.%d`
-export GPGKEY := '4AA4767BBC9C4B1D18AE28B77F2D434B9741E8AC'
-export GPGSENDER:= 'Pierre Schmitz <pierre@archlinux.de>'
+export GPGKEY := '3E80CA1A8B89F69CBA57D98A76A5EF9054449A5C'
+export GPGSENDER:= 'Pierre Schmitz <pierre@archlinux.org>'
 
 _default:
 	@just --list
