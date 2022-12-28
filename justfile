@@ -119,6 +119,28 @@ upload-release:
 		sha256sums.txt b2sums.txt \
 		-e ssh repos.archlinux.org:tmp/
 
+# Publish uploaded release
+publish:
+	#!/usr/bin/env bash
+	ssh -T repos.archlinux.org -- <<eot
+		set -euo pipefail
+		mkdir "/srv/ftp/iso/${VERSION}"
+
+		pushd tmp
+		mv \
+		"archlinux-${VERSION}-x86_64.iso"* "archlinux-x86_64.iso"* \
+		"archlinux-bootstrap-${VERSION}-x86_64.tar.gz"* "archlinux-bootstrap-x86_64.tar.gz"*  \
+		arch \
+		sha256sums.txt b2sums.txt \
+		"/srv/ftp/iso/${VERSION}/"
+		popd
+
+		pushd /srv/ftp/iso/
+		rm latest
+		ln -s "${VERSION}" latest
+		popd
+	eot
+
 # show release information
 show-info:
 	@file arch/boot/x86_64/vmlinuz-* | grep -P -o 'version [^-]*'
