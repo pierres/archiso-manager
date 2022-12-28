@@ -141,6 +141,10 @@ publish:
 		popd
 	eot
 
+# Remove specified release from server
+remove-release version:
+	ssh -T repos.archlinux.org -- rm -rf "/srv/ftp/iso/{{version}}"
+
 # show release information
 show-info:
 	@file arch/boot/x86_64/vmlinuz-* | grep -P -o 'version [^-]*'
