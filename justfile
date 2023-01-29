@@ -7,7 +7,7 @@ _default:
 	@just --list
 
 # build all artifacts
-all: build create-signatures create-torrent latest-symlink show-info
+all: build create-signatures verify-signatures create-torrent latest-symlink show-info
 
 # remove all build artifacts
 clean:
@@ -80,6 +80,15 @@ create-signatures:
 	done
 	for sum in sha256sum b2sum; do \
 		$sum  "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" > ${sum}s.txt; \
+	done
+
+# verify GPG signatures and checksums
+verify-signatures:
+	for f in "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz"; do \
+		pacman-key -v "$f.sig"; \
+	done
+	for sum in sha256sum b2sum; do \
+		$sum -c ${sum}s.txt; \
 	done
 
 # create a latest symlink
