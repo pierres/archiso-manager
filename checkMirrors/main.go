@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -28,8 +29,14 @@ func main() {
 	// disable debug logging (e.g. used by the http client)
 	log.SetOutput(io.Discard)
 
-	isoVersion := fetchLatestVersion()
-	fmt.Printf("Latest version is %s\n", isoVersion)
+	var isoVersion string
+	if len(os.Args) == 2 {
+		isoVersion = os.Args[1]
+	} else {
+		isoVersion = fetchLatestVersion()
+	}
+	fmt.Printf("Checking version %s\n", isoVersion)
+
 	mirrorUrlList := fetchMirrorUrls()
 
 	var isoUrls []string

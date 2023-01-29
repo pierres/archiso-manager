@@ -172,8 +172,8 @@ copy-torrent:
 run-iso:
 	run_archiso -i "archlinux-${VERSION}-x86_64.iso"
 
-# check mirror status for latest release
-check-mirrors:
-	@GODEBUG=netdns=go go run checkMirrors/main.go
+# check mirror status for specified version or latest release
+check-mirrors *version:
+	@GODEBUG=netdns=go go run checkMirrors/main.go {{version}}
 
 # vim: set ft=make :
