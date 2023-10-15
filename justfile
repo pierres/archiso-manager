@@ -1,7 +1,7 @@
+set dotenv-load := true
+
 export CURDIR := justfile_directory()
 export VERSION := `date +%Y.%m.%d`
-export GPGKEY := '3E80CA1A8B89F69CBA57D98A76A5EF9054449A5C'
-export GPGSENDER:= 'Pierre Schmitz <pierre@archlinux.org>'
 
 _default:
 	@just --list
@@ -34,7 +34,7 @@ build:
 # create GPG signatures and checksums
 create-signatures:
 	for f in "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz"; do \
-		gpg --use-agent --sender "${GPGSENDER}" --local-user "${GPGKEY}" --detach-sign "$f"; \
+		gpg --use-agent --sender "$GPGSENDER" --local-user "$GPGKEY" --detach-sign "$f"; \
 	done
 	for sum in sha256sum b2sum; do \
 		$sum  "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" > ${sum}s.txt; \
@@ -119,8 +119,8 @@ show-info:
 		echo -n "${sum%%sums.txt} "; \
 		sed -zE "s/^([a-f0-9]+)\s+archlinux-${VERSION}-x86_64\.iso.*/\1\n/g" $sum; \
 	done
-	@echo GPG Fingerprint: "${GPGKEY}"
-	@echo GPG Signer: "${GPGSENDER}"
+	@echo GPG Fingerprint: "$GPGKEY"
+	@echo GPG Signer: "$GPGSENDER"
 
 # copy Torrent file to clipboard
 copy-torrent:
