@@ -79,6 +79,7 @@ create-torrent:
 
 # upload artifacts
 upload-release:
+	#!/usr/bin/env bash
 	ssh -T repos.archlinux.org -- <<eot
 		set -euo pipefail
 		mkdir -p archiso-tmp
