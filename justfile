@@ -11,7 +11,7 @@ all: build create-signatures verify-signatures create-torrent latest-symlink sho
 
 # remove all build artifacts
 clean:
-	git clean -xdf -e .idea -e codesign.crt -e codesign.key
+	git clean -xdf -e .idea -e codesign.crt -e codesign.key -e .env
 
 # build ISO image
 build:
