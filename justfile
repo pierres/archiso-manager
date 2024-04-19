@@ -33,16 +33,16 @@ build:
 
 # create GPG signatures and checksums
 create-signatures:
-	for f in "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz"; do \
+	for f in "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.zst"; do \
 		gpg --use-agent --sender "$GPGSENDER" --local-user "$GPGKEY" --detach-sign "$f"; \
 	done
 	for sum in sha256sum b2sum; do \
-		$sum  "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" > ${sum}s.txt; \
+		$sum  "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.zst" > ${sum}s.txt; \
 	done
 
 # verify GPG signatures and checksums
 verify-signatures:
-	for f in "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.gz"; do \
+	for f in "archlinux-${VERSION}-x86_64.iso" "archlinux-bootstrap-${VERSION}-x86_64.tar.zst"; do \
 		pacman-key -v "$f.sig"; \
 	done
 	for sum in sha256sum b2sum; do \
@@ -53,8 +53,8 @@ verify-signatures:
 latest-symlink:
 	ln -sf "archlinux-${VERSION}-x86_64.iso" "archlinux-x86_64.iso"
 	ln -sf "archlinux-${VERSION}-x86_64.iso.sig" "archlinux-x86_64.iso.sig"
-	ln -sf "archlinux-bootstrap-${VERSION}-x86_64.tar.gz" "archlinux-bootstrap-x86_64.tar.gz"
-	ln -sf "archlinux-bootstrap-${VERSION}-x86_64.tar.gz.sig" "archlinux-bootstrap-x86_64.tar.gz.sig"
+	ln -sf "archlinux-bootstrap-${VERSION}-x86_64.tar.zst" "archlinux-bootstrap-x86_64.tar.zst"
+	ln -sf "archlinux-bootstrap-${VERSION}-x86_64.tar.zst.sig" "archlinux-bootstrap-x86_64.tar.zst.sig"
 
 	# add checksums for symlinks
 	for sum in sha256sum b2sum; do \
@@ -86,7 +86,7 @@ upload-release:
 	eot
 	rsync -cah --progress \
 		"archlinux-${VERSION}-x86_64.iso"* "archlinux-x86_64.iso"* \
-		"archlinux-bootstrap-${VERSION}-x86_64.tar.gz"* "archlinux-bootstrap-x86_64.tar.gz"*  \
+		"archlinux-bootstrap-${VERSION}-x86_64.tar.zst"* "archlinux-bootstrap-x86_64.tar.zst"*  \
 		arch \
 		sha256sums.txt b2sums.txt \
 		-e ssh repos.archlinux.org:archiso-tmp/
@@ -101,7 +101,7 @@ publish:
 		pushd archiso-tmp
 		mv \
 		"archlinux-${VERSION}-x86_64.iso"* "archlinux-x86_64.iso"* \
-		"archlinux-bootstrap-${VERSION}-x86_64.tar.gz"* "archlinux-bootstrap-x86_64.tar.gz"*  \
+		"archlinux-bootstrap-${VERSION}-x86_64.tar.zst"* "archlinux-bootstrap-x86_64.tar.zst"*  \
 		arch \
 		sha256sums.txt b2sums.txt \
 		"/srv/ftp/iso/${VERSION}/"
