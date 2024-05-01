@@ -2,7 +2,7 @@
 /codesign.crt
 /codesign.key
 /archlinux-*.iso*
-/archlinux-bootstrap-*.tar.gz*
+/archlinux-bootstrap-*.tar.zst*
 /arch
 /sha256sums.txt
 /b2sums.txt
