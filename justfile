@@ -19,7 +19,7 @@ build:
     #!/usr/bin/env bash
     set -euo pipefail
 
-    TMPDIR=$(mktemp -d)
+    TMPDIR=$(mktemp -d -t archiso-manager-build.XXXXXXXXXX)
     sudo mkarchiso \
     	-c "{{ justfile_directory() }}/codesign.crt {{ justfile_directory() }}/codesign.key" \
     	-m 'iso netboot bootstrap' \
