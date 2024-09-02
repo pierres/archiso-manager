@@ -34,32 +34,41 @@ build:
 
 # create GPG signatures and checksums
 create-signatures:
-    for f in "archlinux-{{ VERSION }}-x86_64.iso" "archlinux-bootstrap-{{ VERSION }}-x86_64.tar.zst"; do \
-    	gpg --use-agent --sender "$GPGSENDER" --local-user "$GPGKEY" --detach-sign "$f"; \
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    for f in "archlinux-{{ VERSION }}-x86_64.iso" "archlinux-bootstrap-{{ VERSION }}-x86_64.tar.zst"; do
+    	gpg --use-agent --sender "$GPGSENDER" --local-user "$GPGKEY" --detach-sign "$f"
     done
-    for sum in sha256sum b2sum; do \
-    	$sum  "archlinux-{{ VERSION }}-x86_64.iso" "archlinux-bootstrap-{{ VERSION }}-x86_64.tar.zst" > ${sum}s.txt; \
+    for sum in sha256sum b2sum; do
+    	$sum  "archlinux-{{ VERSION }}-x86_64.iso" "archlinux-bootstrap-{{ VERSION }}-x86_64.tar.zst" > ${sum}s.txt
     done
 
 # verify GPG signatures and checksums
 verify-signatures:
-    for f in "archlinux-{{ VERSION }}-x86_64.iso" "archlinux-bootstrap-{{ VERSION }}-x86_64.tar.zst"; do \
-    	pacman-key -v "$f.sig"; \
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    for f in "archlinux-{{ VERSION }}-x86_64.iso" "archlinux-bootstrap-{{ VERSION }}-x86_64.tar.zst"; do
+    	pacman-key -v "$f.sig"
     done
-    for sum in sha256sum b2sum; do \
-    	$sum -c ${sum}s.txt; \
+    for sum in sha256sum b2sum; do
+    	$sum -c ${sum}s.txt
     done
 
 # create a latest symlink
 latest-symlink:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
     ln -sf "archlinux-{{ VERSION }}-x86_64.iso" "archlinux-x86_64.iso"
     ln -sf "archlinux-{{ VERSION }}-x86_64.iso.sig" "archlinux-x86_64.iso.sig"
     ln -sf "archlinux-bootstrap-{{ VERSION }}-x86_64.tar.zst" "archlinux-bootstrap-x86_64.tar.zst"
     ln -sf "archlinux-bootstrap-{{ VERSION }}-x86_64.tar.zst.sig" "archlinux-bootstrap-x86_64.tar.zst.sig"
 
     # add checksums for symlinks
-    for sum in sha256sum b2sum; do \
-    	sed "p;s/-{{ VERSION }}//" -i ${sum}s.txt; \
+    for sum in sha256sum b2sum; do
+    	sed "p;s/-{{ VERSION }}//" -i ${sum}s.txt
     done
 
 # create Torrent file
@@ -81,6 +90,8 @@ create-torrent:
 # upload artifacts
 upload-release:
     #!/usr/bin/env bash
+    set -euo pipefail
+
     ssh -T repos.archlinux.org -- <<eot
     	set -euo pipefail
     	mkdir -p archiso-tmp
@@ -95,6 +106,8 @@ upload-release:
 # Publish uploaded release
 publish:
     #!/usr/bin/env bash
+    set -euo pipefail
+
     ssh -T repos.archlinux.org -- <<eot
     	set -euo pipefail
     	mkdir "/srv/ftp/iso/{{ VERSION }}"
@@ -120,10 +133,13 @@ remove-release version:
 
 # show release information
 show-info:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
     @file arch/boot/x86_64/vmlinuz-* | grep -P -o 'version [^-]*'
-    @for sum in *sums.txt; do \
-    	echo -n "${sum%%sums.txt} "; \
-    	sed -zE "s/^([a-f0-9]+)\s+archlinux-{{ VERSION }}-x86_64\.iso.*/\1\n/g" $sum; \
+    @for sum in *sums.txt; do
+    	echo -n "${sum%%sums.txt} "
+    	sed -zE "s/^([a-f0-9]+)\s+archlinux-{{ VERSION }}-x86_64\.iso.*/\1\n/g" $sum
     done
     @echo GPG Fingerprint: "$GPGKEY"
     @echo GPG Signer: "$GPGSENDER"
