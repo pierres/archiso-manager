@@ -42,7 +42,8 @@ func main() {
 	var isoUrls []string
 	for _, s := range mirrorUrlList.Urls {
 		if s.Protocol == "https" && s.Active && s.Isos {
-			isoUrls = append(isoUrls, fmt.Sprintf("%siso/%s/archlinux-%s-x86_64.iso", s.Url, isoVersion, isoVersion))
+			isoFile := fmt.Sprintf("%siso/%s/archlinux-%s-x86_64.iso", s.Url, isoVersion, isoVersion)
+			isoUrls = append(isoUrls, isoFile, isoFile+".sig")
 		}
 	}
 
