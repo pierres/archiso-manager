@@ -20,6 +20,8 @@ build:
     set -euo pipefail
 
     TMPDIR=$(mktemp -d -t archiso-manager-build.XXXXXXXXXX)
+    chown :alpm "$TMPDIR"
+    chmod g+rx "$TMPDIR"
     sudo mkarchiso \
     	-c "{{ justfile_directory() }}/codesign.crt {{ justfile_directory() }}/codesign.key" \
     	-m 'iso netboot bootstrap' \
