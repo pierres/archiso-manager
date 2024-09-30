@@ -138,13 +138,13 @@ show-info:
     #!/usr/bin/env bash
     set -euo pipefail
 
-    @file arch/boot/x86_64/vmlinuz-* | grep -P -o 'version [^-]*'
-    @for sum in *sums.txt; do
+    file arch/boot/x86_64/vmlinuz-* | grep -P -o 'version [^-]*'
+    for sum in *sums.txt; do
     	echo -n "${sum%%sums.txt} "
     	sed -zE "s/^([a-f0-9]+)\s+archlinux-{{ VERSION }}-x86_64\.iso.*/\1\n/g" $sum
     done
-    @echo GPG Fingerprint: "$GPGKEY"
-    @echo GPG Signer: "$GPGSENDER"
+    echo GPG Fingerprint: "$GPGKEY"
+    echo GPG Signer: "$GPGSENDER"
 
 # copy Torrent file to clipboard
 copy-torrent:
