@@ -157,3 +157,16 @@ run-iso:
 # check mirror status for specified version or latest release
 check-mirrors *version:
     @GODEBUG=netdns=go go run checkMirrors/main.go {{ version }}
+
+# move build artifacts into the configured ARCHIVEDIR
+archive:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    target="$ARCHIVEDIR/{{ VERSION }}"
+    mkdir "$target"
+    mv arch "$target"
+    mv archlinux-{{ VERSION }}-x86_64.iso{,.sig,.torrent} "$target"
+    mv archlinux-bootstrap-{{ VERSION }}-x86_64.tar.zst{,.sig} "$target"
+    mv archlinux-bootstrap-x86_64.tar.zst{,.sig} "$target"
+    mv archlinux-x86_64.iso{,.sig} "$target"
+    mv *sums.txt "$target"
