@@ -55,7 +55,7 @@ func main() {
 	okStatus := 0
 	failStatus := 0
 	numberOfUrls := len(isoUrls)
-	for i := 0; i < numberOfUrls; i++ {
+	for range numberOfUrls {
 		if <-status {
 			okStatus++
 		} else {
