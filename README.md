@@ -4,7 +4,7 @@
 
 ### Install required packages
 ```sh
-pacman -Syu --needed just archiso rsync mktorrent
+pacman -Syu --needed just archiso edk2-ovmf rsync mktorrent
 ```
 
 ### Configure your signing keys

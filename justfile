@@ -152,7 +152,7 @@ copy-torrent:
 
 # test the ISO image
 run-iso:
-    run_archiso -i "archlinux-{{ VERSION }}-x86_64.iso"
+    run_archiso -u -i "archlinux-{{ VERSION }}-x86_64.iso"
 
 # check mirror status for specified version or latest release
 check-mirrors *version:
