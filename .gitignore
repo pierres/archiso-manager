@@ -1,6 +1,7 @@
 /.idea
 /codesign.crt
 /codesign.key
+/codesign.crt.*.bak
 /archlinux-*.iso*
 /archlinux-bootstrap-*.tar.zst*
 /arch

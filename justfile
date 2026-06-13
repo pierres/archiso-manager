@@ -14,8 +14,26 @@ all: build create-signatures verify-signatures create-torrent latest-symlink sho
 clean:
     git clean -xdf -e .idea -e codesign.crt -e codesign.key -e .env
 
+# renew code signing certificate
+[confirm]
+renew_cert:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    [ -f codesign.crt ] && cp codesign.crt codesign.crt.$(date +%s).bak
+    openssl req -new -x509 -days 3650 -key codesign.key -config codesign.cnf -out codesign.crt
+
+# Check if certificate is valid and not expired
+check_cert:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if ! openssl x509 -checkend 0 -noout -in codesign.crt; then
+        echo "Error: Certificate codesign.crt is expired or invalid."
+        exit 1
+    fi
+    echo "Certificate codesign.crt is valid."
+
 # build ISO image
-build:
+build: check_cert
     #!/usr/bin/env bash
     set -euo pipefail
 

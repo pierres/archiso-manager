@@ -1,0 +1,14 @@
+[ req ]
+default_bits        = 4096
+distinguished_name  = req_distinguished_name
+prompt              = no
+x509_extensions     = codesigning
+
+[ req_distinguished_name ]
+C                   = DE
+CN                  = Pierre Schmitz
+emailAddress        = pierre@archlinux.de
+
+[ codesigning ]
+keyUsage            = digitalSignature
+extendedKeyUsage    = codeSigning
