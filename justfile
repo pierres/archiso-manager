@@ -38,19 +38,14 @@ build: check_cert
     set -euo pipefail
 
     TMPDIR=$(mktemp -d -t archiso-manager-build.XXXXXXXXXX)
-    sudo chown :alpm "$TMPDIR"
-    sudo chmod g+rx "$TMPDIR"
-    sudo mkarchiso \
+    mkarchiso \
     	-c "{{ justfile_directory() }}/codesign.crt {{ justfile_directory() }}/codesign.key" \
     	-m 'iso netboot bootstrap' \
     	-w "${TMPDIR}" \
     	-o "{{ justfile_directory() }}" \
-    	/usr/share/archiso/configs/releng/ \
+    	/usr/share/archiso/configs/releng
 
-    sudo rm -rf "${TMPDIR}"
-    sudo rm -f arch/boot/memtest && sudo rm -rf arch/boot/licenses/memtest86+
-    # Set owner of generated files
-    sudo chown -R $(id -u):$(id -g) arch archlinux-*
+    unshare --map-auto --map-root-user -- rm -rf "${TMPDIR}"
 
 # create GPG signatures and checksums
 create-signatures:
