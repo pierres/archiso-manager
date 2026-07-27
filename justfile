@@ -12,7 +12,7 @@ all: build create-signatures verify-signatures create-torrent latest-symlink sho
 # remove all build artifacts
 [confirm]
 clean:
-    git clean -xdf -e .idea -e codesign.crt -e codesign.key -e .env
+    git clean -xdf -e .idea -e codesign.crt -e codesign.key -e 'codesign.crt.*.bak' -e .env
 
 # renew code signing certificate
 [confirm]
